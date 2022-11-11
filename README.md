@@ -31,7 +31,7 @@ I am a big music fan I must have said this one million times already and now you
 
 ## Project Objectives 
 
-To get anywhere close to achieving this project I need to set clear objectives and timelines. This goals are not set in stone but a sign posts to guide me through out my project. Some of this milestones have already been met since I started this project but others have not been met because of conflicting commitments. Tick is for met (✅) and Cross is for not met (❌)
+To get anywhere close to achieving this project I need to set clear objectives and timelines. This goals are not set in stone but a sign posts to guide me through out my project. 
 
 The objectives of this project are: 
 
@@ -63,7 +63,7 @@ The basic project requirements include:
      
 ## Project Milestone 
 
-To make meaning progress towards my goal, I will need to set clear milestones that can keep me motivated towards my goal. 
+To make meaning progress towards my goal, I will need to set clear milestones that can keep me motivated towards my goal. Some of this milestones have already been met since I started this project but others have not been met because of conflicting commitments. Tick is for met (✅) and Cross is for not met (❌)
 
 I propose a tentative project timeline below: 
 
