@@ -1,85 +1,11 @@
-# Project Summary: 
+# Spotify ETL 
+At the core of this project is the process of extracting data from spotify on user listening history, doing some basic transformation on the data and loading the data to a warehouse for user song play analytics. The program we are building uses [Spotipy](https://spotipy.readthedocs.io/en/2.16.1/) which is a lightweight Python library for the [Spotify Web API](https://developer.spotify.com/documentation/web-api/). We are interested in collecting user listening history for each user participating in this project, transform the data using python to clean it up, create unique identifiers and load the it to a Postgres database. The loading piece is done on the local machine of each user. After the data is loaded to a database, we use SQL to query the data and Python schedule an automated weekly email giving a summary of the spotify user song plays for the week. Metrics are built in the email utilizing SQL. The metrics are similar those seen in [Spotify Wrapped](https://en.wikipedia.org/wiki/Spotify_Wrapped).
 
-## Background 
+# Extracting: Spotify API
+Data is extracted from Spotify using this [endpoint](https://developer.spotify.com/documentation/web-api/reference/#/operations/get-recently-played) to get the 50 most recent played tracks. The result of calling is endpoint is a python [dictionary](https://docs.python.org/3/tutorial/datastructures.html#dictionaries) data structure which is then used to create multiple [dataframe](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html) (A 2 dimensional data structure) after some clean up. 
 
-Spotify is the number one streaming app in the world 🌍. They pioneered the music streaming concept and disrupted the music industry with their innovative subscription model whereby people can stream a large collection of music for free with ads or pay for a premium monthly subscription fee to stream ads-free. Spotify has grown over the last decade and added to their collection of offerings such as on-demand podcast, weekly customized song recommendations, and Spotify wrap which is a year end review of user songs streamed.  
+# Transformation: Python and Pandas
+Python and Pandas work hand-in-glove to transform the data that was extracted. [Pandas](https://docs.python.org/3/tutorial/datastructures.html#dictionaries) is a python library that is widely used for data science work because of it's data manipulation capabilities. The transformations here include removing duplicate albums and artists. Another very important transformation is creating a unique identifier column as we don't want to have to insert the same song played at the same time. A new column was created that combines the `song_id` with the time that the track was played in UNIX timestamp version (`UNIX_Time_Stamp`). You cannot play more than one song at a time on Spotify so it makes sense to implement this logic. To prepare the data for loading, we use two different data structures (Dictionary of Lists and List of Dictionaries), see more details in the [spotify_etl.py](https://github.com/PeterNdiforchu/Spotify-Music-Project/blob/a95db44916fd5e30a0d0bef19fb1f11aa241c4c1/spotify_project/spotify_etl.ipynb) jupyter notebook. The last step involves transforming the data structures into a dataframe, perform a series of datatime transformations, create unique identifiers for each song and prepare to load the data into a Postgres database.
 
- 
-I am a big music fan and I listen to all sorts of music, hip-hop , r&b 🎹, pop, afrobeats 🥁, gospel, reggae 🎸, and the list is expanding daily. Spotify competes with other music streaming apps like Shazam, Amazon Music, YouTube Music, Deezer and Apple Music. Spotify is my favorite amongst the other music streaming apps because of so many reasons including  user-friendly UI & UX, great collections of music, top-notch recommendation engines, ease of discovering new songs/genres, etc.  
-
-
-## Motivation for Project 💪🏾
-Spotify has this feature on their app called "Spotify Wrap". Spotify Wrap brings insight into your music listening habits through out the year. Spotify Wrap comes December every year and it will give users insights on the top 5 most streamed songs, top 5 most streamed artists, top 5 most streamed genre of music. They bring the insights to you in the most entertaining way. They use language, human psychology and machine learning that categorizes the user based on their listening habits.  
-
- 
-My 2021 wrap really did a nice job at summarizing how the year was like for me - a transition, moments of lows and highs - well captured in my "Audio Aura" which is a ranking of music mood through out the year. My top music moods were "wistful" and "uplifting". A section in my Spotify wrap themed "How well do you know you?" got me really freaking out a little about how much Spotify knows me. They got to know I stay up late at night, "we're talking the 3AM, playing music with no lights on You" as they put it.  It was like a sneak peak into my 2021 but through my music consumption habits. I started listening to a podcast called "French Made Easy" and this was because I moved cities - from an Anglo-Saxon region of Canada to a more Francophonie region. They mentioned that in my wrap stating "there was one podcast that lived in your head, rent-free, all year long" actually this was not true, it just happened to be  one of the few podcast I listened to that year. 
-
- 
-As a music fanatic and from the insights brought to me by Spotify on my music streaming habits from 2020 and 2021 and how strongly it aligned with what was going on in my life - like a screenplay of my life through music - I have come up with a hypothesis I will like to test. My Hypothesis is simple - **Music streaming logs can give you some insights into your moods and somewhat predict future moods**. This is a lofty hypothesis, and my goal at the end of this project is to proof or disproof my hypothesis.
-
-## Why does this project matter to me? 
-
-I am a big music fan I must have said this one million times already and now you are like "would you just shut up and tell". Alright, I'll get right on it…. This project matters to me for 3 main reasons: 
-
-  1. I want build my skills in data analysis, data engineering and data science. I believe the scope of this project is wide enough to touch on      so many skills in these highly sought out domains in the job market such as programming with Python and SQL, data modeling, data pipeline        building, cloud technology, machine learning, data visualization, communication, GitHub, markdown, etc.  
-
-  2. I aim through this project to build something that could potentially add value to Spotify and get them interested enough to make an offer        to buy the feature I'm recommending (kidding 😅, It is just a fun project!). Hopefully I can use this project to get a job at my dream          company.
-
-  3. I hope to start a conversation on the power of music as a universal language that connects people and helps them to discover a little bit        about their passions, love language, and mental health challenges. 
-  
-# Project Outline 
-
-## Project Objectives 
-
-To get anywhere close to achieving this project I need to set clear objectives and timelines. This goals are not set in stone but a sign posts to guide me through out my project. 
-
-The objectives of this project are: 
-
-  1. To build a data pipeline for my Spotify music streams for the year 2022 (January - December) 
-
-  2. To analyze my music streams to mirror Spotify Wrap type analysis and compare with insights from my 2022 Wrap. 
-
-  3. To analyze my top 5 moods of 2022 based on my music streams and use the data to predict my 2023 mood. 
-
-  4. To become proficient data pipeline building and machine learning with Python by December 2022. 
-
-## Project Requirements 
-
-To achieve this project I need to understand what are requirements to begin the project. I will lay out the basic requirements here and will update the list as I learn more and talk with experts for insights. 
-
-The basic project requirements include: 
-
-  1. Laptop with working internet connection (using MacBook Air 500MB RAM, 1GB storage) 
-
-  2. Jupyter Lab for creating and arranging project docs (python script, configuration parameters, images, etc) 
-
-  3. Cloud account - I will be using AWS for this project (My estimated budget is $300 for this project as compute cost across the AWS services      I will be using : Redshift, S3, EMR, etc) 
-
-  4. Family and Friends support - this a very important as I would need to invest a lot of time into this and will need the support of my family      especially my wife. 
-  
-  5. I will need a commitment of 10hrs/week working on this project - this will have to be well accounted for and spread across the week so it        doesn’t impact my other commitments. 
-
-     ……. 
-     
-## Project Milestone 
-
-To make meaning progress towards my goal, I will need to set clear milestones that can keep me motivated towards my goal. Some of this milestones have already been met since I started this project but others have not been met because of conflicting commitments. Tick is for met (✅) and Cross is for not met (❌)
-
-I propose a tentative project timeline below: 
-
-  1. Build data model for Spotify streams with fact and dimension tables by March 2022 ✅
-
-  2. Data pipeline built by April 30th 2022 for extracting data on daily streams from Spotify app and loading to S3 bucket whereby they are          transformed and loaded to AWS redshift ❌
-
-  3. Begin collection data on daily streams from Jan to July 2022 and loading to database for analysis. This should be completed by August 15th      2022 ❌
-
-  4. Begin analysis of data provided by spotify on daily streams for 2021 and visualizing the insights by August 30th 2022. 
-
-  5. Start analyzing data from the doing machine learning on the data collected from January 1st 2021 to July 30th 2022. This should start by        Sept  1st 2022. ❌
-
-  6. A baseline machine learning model should be completed by October  30th 2022. ❌
-
-  7. Start designing basic website by October 1st 2022 
-
-  8. A basic website to present insights on my daily music stream from 2021, 2022 and machine learning predictions on moods (sensitivity              analysis) should be ready by Dec  30th 2022. ❌
- 
+# Load: Python and Postgres
+I created a database on my computer using [Postgres](https://www.postgresql.org/). Postgres is an free open source relational database management system. You can follow these [steps](https://www.postgresqltutorial.com/postgresql-getting-started/install-postgresql/) to install postgres on your windows local machine and create the schema for the spotify database. Mac users can use these [steps](https://www.postgresqltutorial.com/postgresql-getting-started/install-postgresql-macos/) to install on mac. There are 3 main tables created using SQL Data Definition Language (DDL) for the Load(L) piece of the ETL process. You can find the SQL queries for creating the tables [here](https://github.com/PeterNdiforchu/Spotify-Music-Project/blob/a95db44916fd5e30a0d0bef19fb1f11aa241c4c1/spotify_project/Create_Tables.sql). To load the data in Postgres, we use the Pandas `.to_sql` method to load the data into a temporary table prior to inserting into the final database after making sure that the tracks are unique. Below is a picture of the ![database schema](https://github.com/PeterNdiforchu/Spotify-Music-Project/blob/a95db44916fd5e30a0d0bef19fb1f11aa241c4c1/spotify_project/spotify_schema.png).
